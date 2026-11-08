@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CL650 Flight Tracker</title>
+<meta name="description" content="Challenger 650 flight records and last logged position.">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<link rel="stylesheet" href="/style.css">
+<script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script defer src="/app.js"></script>
+</head>
+<body>
+<header class="top"><div class="brand"><span class="mark" aria-hidden="true">✈</span><span>FLIGHT DECK<small>OPERATIONS LOG</small></span></div><span class="badge">CL650 <span> / </span> CHALLENGER 650</span></header>
+<main>
+<section class="intro"><div><p class="eyebrow">AIRCRAFT OPERATIONS</p><h1>Flight tracker</h1><p class="muted">Challenger 650 flight records and last logged position.</p></div><button id="new-flight" class="primary">+ Log flight</button></section>
+<p id="notice" role="status" hidden></p>
+<section class="metrics" aria-label="Log totals">
+<div><small>FLIGHTS LOGGED</small><strong id="count">—</strong></div>
+<div><small>FLIGHT TIME</small><strong id="time">—</strong></div>
+<div><small>FUEL USED</small><strong id="fuel">—</strong></div>
+<div><small>PASSENGERS CARRIED</small><strong id="passengers">—</strong></div>
+</section>
+<section class="panel">
+<div class="section-head"><div><p class="eyebrow">POSITION</p><h2>Aircraft map</h2></div><button class="secondary" id="recenter" disabled>Recenter</button></div>
+<div class="map-frame"><div id="map" aria-label="Map of the latest recorded flight"></div><div class="map-message" id="map-message">Add a flight to place the aircraft on the map.</div></div>
+<div class="map-foot"><div><small>LAST RECORDED DESTINATION</small><strong id="position">Awaiting flight log</strong><span class="muted" id="landed"></span></div><span class="tag">LOG-BASED POSITION</span></div>
+</section>
+<section class="panel history">
+<div class="section-head"><div><p class="eyebrow">RECORDS</p><h2>Flight history</h2></div></div>
+<div class="table-wrap"><table><thead><tr><th>Landing (UTC)</th><th>Route</th><th>Flight time</th><th>Fuel used</th><th>Fuel price</th><th>Oil E1 / E2</th><th>Passengers</th><th><span class="sr-only">Edit flight</span></th></tr></thead><tbody id="rows"></tbody></table></div>
+<p class="empty muted" id="empty">Loading flight records…</p>
+</section>
+<footer>CL650 FLIGHT DECK <span>Airport data from <a href="https://ourairports.com/data/" target="_blank" rel="noopener">OurAirports</a></span></footer>
+</main>
+<dialog id="entry">
+<form id="log-form">
+<div class="section-head"><div><p class="eyebrow">CHALLENGER 650</p><h2 id="form-title">Log flight</h2></div><button type="button" class="secondary" data-close aria-label="Close">×</button></div>
+<div class="form-body">
+<label>Landing date and time (UTC)<input type="datetime-local" name="landedAt" required></label>
+<div class="grid">
+<fieldset><legend>Departure</legend><label>Airport code<input name="departureCode" maxlength="4" minlength="3" placeholder="e.g. LFPB" required autocomplete="off" spellcheck="false"></label><p class="airport-note" id="departure-note"></p><details id="departure-manual"><summary>Enter airport details manually</summary><label>Airport name<input name="departureName" maxlength="120"></label><div class="grid"><label>Latitude<input name="departureLat" type="number" step="any" min="-90" max="90"></label><label>Longitude<input name="departureLon" type="number" step="any" min="-180" max="180"></label></div></details></fieldset>
+<fieldset><legend>Destination</legend><label>Airport code<input name="destinationCode" maxlength="4" minlength="3" placeholder="e.g. EGKB" required autocomplete="off" spellcheck="false"></label><p class="airport-note" id="destination-note"></p><details id="destination-manual"><summary>Enter airport details manually</summary><label>Airport name<input name="destinationName" maxlength="120"></label><div class="grid"><label>Latitude<input name="destinationLat" type="number" step="any" min="-90" max="90"></label><label>Longitude<input name="destinationLon" type="number" step="any" min="-180" max="180"></label></div></details></fieldset>
+</div>
+<div class="grid"><label>Flight time (HH:MM)<input name="duration" placeholder="02:35" pattern="[0-9]{1,3}:[0-5][0-9]" required></label><label>Passengers carried<input name="passengers" type="number" min="0" step="1" required></label><label>Fuel used (lb)<input name="fuel" type="number" min="0" step="0.01" required></label><label>Fuel price per unit<input name="price" type="number" min="0" step="0.0001" required></label><label>Currency (3-letter code)<input name="currency" value="EUR" maxlength="3" pattern="[A-Za-z]{3}" required></label><label>Fuel pricing unit<select name="priceUnit"><option value="L">Litre (L)</option><option value="US gal">US gallon</option><option value="kg">Kilogram (kg)</option><option value="lb">Pound (lb)</option></select></label><label>Oil added to engine 1 (US qt)<input name="oil1" type="number" min="0" step="0.01" value="0" required></label><label>Oil added to engine 2 (US qt)<input name="oil2" type="number" min="0" step="0.01" value="0" required></label></div>
+<p id="form-error" role="alert" hidden></p>
+</div>
+<div class="form-actions"><button type="button" class="secondary" data-close>Cancel</button><button type="submit" class="primary">Save flight</button></div>
+</form>
+</dialog>
+</body>
+</html>
